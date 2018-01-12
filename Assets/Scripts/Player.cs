@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-
     [SerializeField]
     private float speed = 5.0f;
+    [SerializeField]
+    private GameObject laserPrefab;
+    [SerializeField]
+    private float fireRate = 0.25f;
+
+    private float nextFire = 0.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +21,7 @@ public class Player : MonoBehaviour {
 	void Update ()
     {
         PlayerMovement();
+        PlayerShot();
     }
 
     private void PlayerMovement()
@@ -46,6 +52,15 @@ public class Player : MonoBehaviour {
         else if (transform.position.x < -8.2f)
         {
             transform.position = new Vector3(-8.2f, transform.position.y, 0);
+        }
+    }
+
+    private void PlayerShot()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            Instantiate(laserPrefab, transform.position + new Vector3(0, 0.92f, 0), Quaternion.identity);
+            nextFire = Time.time + fireRate;
         }
     }
 }
