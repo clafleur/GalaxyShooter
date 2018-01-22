@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     public bool canTripleShot = false;
     public bool speedBoostEnabled = false;
+    public int playerLives = 3;
 
     [SerializeField]
     private float speed = 5.0f;
@@ -68,6 +69,15 @@ public class Player : MonoBehaviour {
         else if (transform.position.x < -8.2f)
         {
             transform.position = new Vector3(-8.2f, transform.position.y, 0);
+        }
+    }
+
+    public void Damage()
+    {
+        playerLives--;
+        if (playerLives < 1)
+        {
+            Destroy(this.gameObject);
         }
     }
 
