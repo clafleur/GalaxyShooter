@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
+    public bool canTripleShot = false;
+
     [SerializeField]
     private float speed = 5.0f;
     [SerializeField]
     private GameObject laserPrefab;
+    [SerializeField]
+    private GameObject tripleShotPrefab;
     [SerializeField]
     private float fireRate = 0.25f;
 
@@ -21,7 +25,11 @@ public class Player : MonoBehaviour {
 	void Update ()
     {
         PlayerMovement();
-        PlayerShot();
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButton("Fire1"))
+        {
+            PlayerShot();
+        }
     }
 
     private void PlayerMovement()
@@ -57,10 +65,30 @@ public class Player : MonoBehaviour {
 
     private void PlayerShot()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButton("Fire1") && Time.time > nextFire)
+        if (Time.time > nextFire)
         {
-            Instantiate(laserPrefab, transform.position + new Vector3(0, 0.92f, 0), Quaternion.identity);
+            if (canTripleShot)
+            {
+                Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(laserPrefab, transform.position + new Vector3(0, 0.95f, 0), Quaternion.identity);
+            }
+
             nextFire = Time.time + fireRate;
         }
+    }
+
+    public void TripleShotPowerUpOn()
+    {
+        canTripleShot = true;
+        StartCoroutine(TripleShotPowerDownRoutine());
+    }
+
+    public IEnumerator TripleShotPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        canTripleShot = false;
     }
 }
