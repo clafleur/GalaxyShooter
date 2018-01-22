@@ -5,8 +5,11 @@ using UnityEngine;
 public class PowerUp : MonoBehaviour {
     [SerializeField]
     private float speed = 3.0f;
-	// Use this for initialization
-	void Start () {
+    [SerializeField]
+    private int powerupID; //0 = triple shot, 1 = speed boost, 2 = sheilds
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -24,7 +27,18 @@ public class PowerUp : MonoBehaviour {
             if (player != null)
             {
                 //enable triple shot
-                player.TripleShotPowerUpOn();
+                if (powerupID == 0)
+                {
+                    player.TripleShotPowerUpOn();
+                }
+                else if (powerupID == 1)
+                {
+                    player.SpeedBoostOn();
+                }
+                else if (powerupID == 2)
+                {
+                    //enable sheilds
+                }
             }
 
             Destroy(this.gameObject);

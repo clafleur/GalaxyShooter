@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
     public bool canTripleShot = false;
+    public bool speedBoostEnabled = false;
 
     [SerializeField]
     private float speed = 5.0f;
@@ -36,11 +37,18 @@ public class Player : MonoBehaviour {
     {
         //horizontal Movement
         float horizontalInput = Input.GetAxis("Horizontal");
-        transform.Translate(Vector3.right * speed * horizontalInput * Time.deltaTime);
-
-        //vertical Movement
         float verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.up * speed * verticalInput * Time.deltaTime);
+
+        if (speedBoostEnabled)
+        {
+            transform.Translate(Vector3.right * speed * 2.5f * horizontalInput * Time.deltaTime);
+            transform.Translate(Vector3.up * speed * 2.5f * verticalInput * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(Vector3.right * speed * horizontalInput * Time.deltaTime);
+            transform.Translate(Vector3.up * speed * verticalInput * Time.deltaTime);
+        }
 
         //clamp movement of player on the y axis
         if (transform.position.y > 0)
@@ -86,9 +94,20 @@ public class Player : MonoBehaviour {
         StartCoroutine(TripleShotPowerDownRoutine());
     }
 
+    public void SpeedBoostOn()
+    {
+        speedBoostEnabled = true;
+        StartCoroutine(SpeedBoostPowerDownRoutine());
+    }
+
     public IEnumerator TripleShotPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
         canTripleShot = false;
+    }
+    public IEnumerator SpeedBoostPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        speedBoostEnabled = false;
     }
 }
