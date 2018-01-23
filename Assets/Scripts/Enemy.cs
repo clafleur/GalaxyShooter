@@ -6,6 +6,8 @@ public class Enemy : MonoBehaviour {
 
     [SerializeField]
     private float speed = 5.0f;
+    [SerializeField]
+    private GameObject enemyExplosionPrefab;
 
     // Use this for initialization
     void Start () {
@@ -38,14 +40,19 @@ public class Enemy : MonoBehaviour {
                 player.Damage();
             }
 
+            Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
+
             Destroy(this.gameObject);
         }
         else if (other.tag == "Laser")
         {
+            Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
+
             if (other.transform.parent != null)
             {
                 Destroy(other.transform.parent.gameObject);
             }
+
             Destroy(other.gameObject);
             Destroy(this.gameObject);
         }

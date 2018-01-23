@@ -37,7 +37,7 @@ public class PowerUp : MonoBehaviour {
                 }
                 else if (powerupID == 2)
                 {
-                    //enable sheilds
+                    player.TurnShieldOn();
                 }
             }
 

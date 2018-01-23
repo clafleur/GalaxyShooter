@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour {
     public bool canTripleShot = false;
     public bool speedBoostEnabled = false;
+    public bool hasShields = false;
     public int playerLives = 3;
 
     [SerializeField]
@@ -13,6 +14,10 @@ public class Player : MonoBehaviour {
     private GameObject laserPrefab;
     [SerializeField]
     private GameObject tripleShotPrefab;
+    [SerializeField]
+    private GameObject playerExplosionPrefab;
+    [SerializeField]
+    private GameObject shieldGameObject;
     [SerializeField]
     private float fireRate = 0.25f;
 
@@ -74,11 +79,20 @@ public class Player : MonoBehaviour {
 
     public void Damage()
     {
+        if (hasShields)
+        {
+            hasShields = false;
+            shieldGameObject.SetActive(false);
+            return;
+        }
+
         playerLives--;
         if (playerLives < 1)
         {
+            Instantiate(playerExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
+
     }
 
     private void PlayerShot()
@@ -108,6 +122,11 @@ public class Player : MonoBehaviour {
     {
         speedBoostEnabled = true;
         StartCoroutine(SpeedBoostPowerDownRoutine());
+    }
+    public void TurnShieldOn()
+    {
+        hasShields = true;
+        shieldGameObject.SetActive(true);
     }
 
     public IEnumerator TripleShotPowerDownRoutine()
