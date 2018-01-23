@@ -46,14 +46,14 @@ public class Enemy : MonoBehaviour {
         }
         else if (other.tag == "Laser")
         {
-            Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
-
             if (other.transform.parent != null)
             {
                 Destroy(other.transform.parent.gameObject);
             }
 
             Destroy(other.gameObject);
+
+            Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }
     }
