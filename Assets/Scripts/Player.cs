@@ -23,9 +23,20 @@ public class Player : MonoBehaviour {
 
     private float nextFire = 0.0f;
 
+    private UIManager uiManager;
+    private GameManager gameManager;
+
 	// Use this for initialization
 	void Start () {
         transform.position = new Vector3(0, 0, 0);
+
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        if (uiManager != null)
+        {
+            uiManager.UpdateLives(playerLives);
+        }
 	}
 	
 	// Update is called once per frame
@@ -87,9 +98,14 @@ public class Player : MonoBehaviour {
         }
 
         playerLives--;
+        uiManager.UpdateLives(playerLives);
+
         if (playerLives < 1)
         {
             Instantiate(playerExplosionPrefab, transform.position, Quaternion.identity);
+            uiManager.ShowTitleScreen();
+            gameManager.gameOver = true;
+
             Destroy(this.gameObject);
         }
 

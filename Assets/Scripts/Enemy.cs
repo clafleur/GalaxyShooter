@@ -9,13 +9,17 @@ public class Enemy : MonoBehaviour {
     [SerializeField]
     private GameObject enemyExplosionPrefab;
 
+    private UIManager uiManager;
+
     // Use this for initialization
-    void Start () {
-		
-	}
+    void Start ()
+    {
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+    }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 
         EnemyMovement();
 	}
@@ -41,7 +45,6 @@ public class Enemy : MonoBehaviour {
             }
 
             Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
-
             Destroy(this.gameObject);
         }
         else if (other.tag == "Laser")
@@ -52,8 +55,9 @@ public class Enemy : MonoBehaviour {
             }
 
             Destroy(other.gameObject);
-
             Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
+
+            uiManager.UpdateScore();
             Destroy(this.gameObject);
         }
     }
