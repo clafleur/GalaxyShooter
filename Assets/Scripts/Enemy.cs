@@ -8,21 +8,30 @@ public class Enemy : MonoBehaviour {
     private float speed = 5.0f;
     [SerializeField]
     private GameObject enemyExplosionPrefab;
+    [SerializeField]
+    private AudioClip audioClip;
 
     private UIManager uiManager;
+    private GameManager gameManager;
 
     // Use this for initialization
     void Start ()
     {
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-
         EnemyMovement();
-	}
+
+        if (gameManager.gameOver && transform.position.y <= -7.0f)
+        {
+            Destroy(this.gameObject);
+        }
+
+    }
 
     void EnemyMovement()
     {
@@ -45,6 +54,7 @@ public class Enemy : MonoBehaviour {
             }
 
             Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
+            AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position);
             Destroy(this.gameObject);
         }
         else if (other.tag == "Laser")
@@ -56,8 +66,8 @@ public class Enemy : MonoBehaviour {
 
             Destroy(other.gameObject);
             Instantiate(enemyExplosionPrefab, transform.position, Quaternion.identity);
-
             uiManager.UpdateScore();
+            AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position);
             Destroy(this.gameObject);
         }
     }

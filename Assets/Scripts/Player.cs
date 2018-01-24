@@ -20,11 +20,18 @@ public class Player : MonoBehaviour {
     private GameObject shieldGameObject;
     [SerializeField]
     private float fireRate = 0.25f;
+    [SerializeField]
+    AudioClip audioClip;
+    [SerializeField]
+    private GameObject[] engines;
 
     private float nextFire = 0.0f;
 
     private UIManager uiManager;
     private GameManager gameManager;
+    private AudioSource audioSource;
+
+    private int hitCount = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -32,11 +39,13 @@ public class Player : MonoBehaviour {
 
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        audioSource = GetComponent<AudioSource>();
 
         if (uiManager != null)
         {
             uiManager.UpdateLives(playerLives);
         }
+        hitCount = 0;
 	}
 	
 	// Update is called once per frame
@@ -90,11 +99,22 @@ public class Player : MonoBehaviour {
 
     public void Damage()
     {
+
         if (hasShields)
         {
             hasShields = false;
             shieldGameObject.SetActive(false);
             return;
+        }
+
+        hitCount++;
+        if (hitCount == 1)
+        {
+            engines[0].SetActive(true);
+        }
+        else if (hitCount == 2)
+        {
+            engines[1].SetActive(true);
         }
 
         playerLives--;
@@ -105,7 +125,7 @@ public class Player : MonoBehaviour {
             Instantiate(playerExplosionPrefab, transform.position, Quaternion.identity);
             uiManager.ShowTitleScreen();
             gameManager.gameOver = true;
-
+            AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position);
             Destroy(this.gameObject);
         }
 
@@ -115,6 +135,8 @@ public class Player : MonoBehaviour {
     {
         if (Time.time > nextFire)
         {
+            audioSource.Play();
+
             if (canTripleShot)
             {
                 Instantiate(tripleShotPrefab, transform.position, Quaternion.identity);
